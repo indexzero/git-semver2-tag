@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Upgrades any semver 1.0 tags to semver 2.0. e.g. 'v1.0.0' becomes '1.0.0'",
   "main": "index.js",
-  "bin": "index.js",
+  "bin": {
+    "git-semver2-tag": "index.js",
+    "git-create-semver2-tags": "build.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/indexzero/git-semver2-tag.git"
@@ -21,6 +24,7 @@
   },
   "dependencies": {
     "async": "^1.4.2",
-    "concat-stream": "^1.5.0"
+    "concat-stream": "^1.5.0",
+    "diagnostics": "^1.1.0"
   }
 }
