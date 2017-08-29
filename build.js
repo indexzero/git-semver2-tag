@@ -94,12 +94,22 @@ function filterMissingVersions(repo, done) {
       return true;
     });
 
-    console.log('\n## Found missing git tags \n[\n%s\n]', versions.map(v => `  ${v.version}`).join(',\n'));
+    console.log('\n## Found missing git tags');
+    if (versions.length) {
+      console.log('[\n%s\n]', versions.map(v => `  ${v.version}`).join(',\n'));
+    } else {
+      console.log('[NONE]\n');
+    }
+
     done(null, versions);
   });
 }
 
 function createGitTags(versions, done) {
+  if (!versions || !versions.length) {
+    return done();
+  }
+
   const commands = versions.map(ver => {
     return `git tag -a '${ver.version}' -m 'Version ${ver.version}' ${ver.sha}`;
   });
@@ -122,6 +132,11 @@ async.parallel({
     createGitTags
   ], err => {
     if (err) { throw err; }
+    if (process.env.DRY) {
+      console.log('DRY run completed. No git commands run.');
+      return;
+    }
+
     console.log('Historical git tags created');
-  })
+  });
 });
