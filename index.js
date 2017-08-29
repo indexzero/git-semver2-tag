@@ -2,10 +2,11 @@
 
 'use strict';
 
-var exec = require('child_process').exec,
-    async = require('async');
+const { exec } = require('child_process');
+const async = require('async');
+const { runCommands, pushTags } = require('./run');
 
-var isOld = /^v/;
+const isOld = /^v/;
 
 /**
  * Lists all git tags for the current repository
@@ -71,31 +72,9 @@ function confirmAndRun(commands, done) {
         return done(null, true);
       }
 
-      console.log('\n## Adding new remote tags');
-      var cmd = 'git push --tags';
-      console.log('Executing %s\n', cmd);
-      if (!process.env.DRY) {
-        return exec(cmd, next);
-      }
-
-      next();
+      pushTags(next);
     }
   ], done);
-}
-
-/**
- * Runs all the `series` of commands.
- */
-function runCommands(msg, series, done) {
-  console.log(msg);
-  async.forEachSeries(series, function execOne(cmd, next) {
-    console.log('%s', cmd);
-    if (!process.env.DRY) {
-      return exec(cmd, next);
-    }
-
-    next();
-  }, done);
 }
 
 async.waterfall([
